@@ -125,17 +125,15 @@ func getStrokes(roomID int64, greaterThanID int64) ([]Stroke, error) {
 }
 
 func getStrokesLength(roomID int64, greaterThanID int64) (int, error) {
-	query := "SELECT COUNT(1) FROM `strokes` WHERE `room_id` = ? AND `id` > ?"
-	rows, err := dbx.Query(query, roomID, greaterThanID)
+	query := "SELECT COUNT(*) AS cnt FROM `strokes` WHERE `room_id` = ? AND `id` > ?"
+	var cnt int
+	err := dbx.Get(&cnt, query, roomID, greaterThanID)
 	if err != nil {
 		return 0, err
 	}
-	defer rows.Close()
 
-	var count int
-	err = rows.Scan(&count)
 	// 空スライスを入れてJSONでnullを返さないように
-	return count, nil
+	return cnt, nil
 }
 
 func getRoom(roomID int64) (*Room, error) {
