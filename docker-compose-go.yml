@@ -1,32 +1,35 @@
 version: '2'
 services:
-  mysql:
-    extends:
-      file: docker-compose-mysql.yml
-      service: mysql
-  go:
-    build:
-      context: ./go
-      dockerfile: Dockerfile
-    depends_on:
-      - mysql
-    links:
-      - mysql
-    environment:
-      ISUCON_ENV: production
-      MYSQL_HOST: mysql
-      MYSQL_PORT: 3306
-      MYSQL_USER: isucon
-      MYSQL_PASS: isucon
+#  mysql:
+#    extends:
+#      file: docker-compose-mysql.yml
+#      service: mysql
+#  go:
+#    build:
+#      context: ./go
+#      dockerfile: Dockerfile
+#    depends_on:
+#      - mysql
+#    links:
+#      - mysql
+#    environment:
+#      ISUCON_ENV: production
+#      MYSQL_HOST: mysql
+#      MYSQL_PORT: 3306
+#      MYSQL_USER: isucon
+#      MYSQL_PASS: isucon
+#    ports:
+#      - "80"
+#      - "6060:6060"
   react:
     extends:
       file: docker-compose-react.yml
       service: react
-    depends_on:
-      - go
-    links:
-      - go
+#    depends_on:
+#      - go
+#    links:
+#      - go
     environment:
-      API: http://go:80
+      API: http://13.73.4.241:8080
     ports:
-      - "443:443"
+      - "442:443"
