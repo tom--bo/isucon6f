@@ -36,29 +36,29 @@ const options = {
 var proxy_options={
     target: apiBaseUrl,
     changeOrigin: true,
+    onProxyRes: function(proxyRes, req, res){
+        fetchJson(`${apiBaseUrl}/api/rooms/${req.params.id}`)
+            .then((json) => {
+                const svg = renderToStaticMarkup(
+                    <Canvas
+                        width={json.room.canvas_width}
+                        height={json.room.canvas_height}
+                        strokes={json.room.strokes}
+                    />
+                );
+                var filesvg='<?xml version="1.0" standalone="no"?>' +
+                    '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' +
+                    svg;
+                fs.writeFileSync(`/tmp/img/${req.params.id}.svg`, filesvg);
+            })}
 }
 var pro=proxy(proxy_options);
-pro.on("proxyRes",function(proxyRes, req, res){
-  fetchJson(`${apiBaseUrl}/api/rooms/${req.params.id}`)
-    .then((json) => {
-      const svg = renderToStaticMarkup(
-        <Canvas
-          width={json.room.canvas_width}
-          height={json.room.canvas_height}
-          strokes={json.room.strokes}
-        />
-      );
-      var filesvg='<?xml version="1.0" standalone="no"?>' +
-        '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' +
-            svg;
-      fs.writeFileSync('/tmp/img/'+${req.params.id}+".svg", filesvg);
-})
 
 const app = express();
 
 app.use(express.static('public'));
 
-app.use('/api/*', pro));
+app.use('/api/*', pro);
 
 
 app.get('/img/:id', (req, res) => {
@@ -74,7 +74,7 @@ app.get('/img/:id', (req, res) => {
       var filesvg='<?xml version="1.0" standalone="no"?>' +
         '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' +
             svg;
-      fs.writeFileSync('/tmp/img/'+${req.params.id}+".svg", filesvg);
+        fs.writeFileSync(`/tmp/img/${req.params.id}.svg`, filesvg);
       res.type('image/svg+xml').send(filesvg);
     })
     .catch((err) => {

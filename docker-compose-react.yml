@@ -9,6 +9,7 @@ services:
       - /react/node_modules
       - /react/build
       - ./ssl:/ssl:ro
+      - ./tmp:/tmp
     environment:
       SSL_KEY: /ssl/oreore.key
       SSL_CERT: /ssl/oreore.crt
@@ -20,6 +21,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./ssl:/ssl:ro
+      - ./tmp:/tmp
     environment:
       SSL_KEY: /ssl/oreore.key
       SSL_CERT: /ssl/oreore.crt
