@@ -125,6 +125,20 @@ func getStrokes(roomID int64, greaterThanID int64) ([]Stroke, error) {
 	return strokes, nil
 }
 
+func getStrokesLength(roomID int64, greaterThanID int64) (int, error) {
+	query := "SELECT COUNT(1) FROM `strokes` WHERE `room_id` = ? AND `id` > ?"
+	rows, err := dbx.Query(query, roomID, greaterThanID)
+	if err != nil {
+		return 0, err
+	}
+	defer rows.Close()
+
+	var count int
+	err = rows.Scan(&count)
+	// 空スライスを入れてJSONでnullを返さないように
+	return count, nil
+}
+
 func getRoom(roomID int64) (*Room, error) {
 	query := "SELECT `id`, `name`, `canvas_width`, `canvas_height`, `created_at` FROM `rooms` WHERE `id` = ?"
 	r := &Room{}
@@ -241,12 +255,12 @@ func getAPIRooms(w http.ResponseWriter, r *http.Request) {
 			outputError(w, err)
 			return
 		}
-		s, err := getStrokes(room.ID, 0)
+		cnt, err := getStrokesLength(room.ID, 0)
 		if err != nil {
 			outputError(w, err)
 			return
 		}
-		room.StrokeCount = len(s)
+		room.StrokeCount = cnt
 		rooms = append(rooms, room)
 	}
 
@@ -517,12 +531,12 @@ func postAPIStrokesRoomsID(ctx context.Context, w http.ResponseWriter, r *http.R
 		return
 	}
 
-	strokes, err := getStrokes(room.ID, 0)
+	cnt, err := getStrokesLength(room.ID, 0)
 	if err != nil {
 		outputError(w, err)
 		return
 	}
-	if len(strokes) == 0 {
+	if cnt == 0 {
 		query := "SELECT COUNT(*) AS cnt FROM `room_owners` WHERE `room_id` = ? AND `token_id` = ?"
 		cnt := 0
 		err = dbx.QueryRow(query, room.ID, t.ID).Scan(&cnt)
