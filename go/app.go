@@ -111,8 +111,7 @@ func getStrokePoints(strokeID int64) ([]Point, error) {
 }
 
 func getStrokes(roomID int64, greaterThanID int64) ([]Stroke, error) {
-	query := "SELECT `id`, `room_id`, `width`, `red`, `green`, `blue`, `alpha`, `created_at` FROM `strokes`"
-	query += " WHERE `room_id` = ? AND `id` > ? ORDER BY `id` ASC"
+	query := "SELECT `id`, `room_id`, `width`, `red`, `green`, `blue`, `alpha`, `created_at` FROM `strokes` WHERE `room_id` = ? AND `id` > ? ORDER BY `id` ASC"
 	strokes := []Stroke{}
 	err := dbx.Select(&strokes, query, roomID, greaterThanID)
 	if err != nil {
