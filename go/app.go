@@ -591,24 +591,24 @@ func postAPIStrokesRoomsID(ctx context.Context, w http.ResponseWriter, r *http.R
 }
 
 func main() {
-	host := os.Getenv("MYSQL_HOST")
-	if host == "" {
-		host = "localhost"
-	}
-	port := os.Getenv("MYSQL_PORT")
-	if port == "" {
-		port = "3306"
-	}
-	_, err := strconv.Atoi(port)
-	if err != nil {
-		log.Fatalf("Failed to read DB port number from an environment variable MYSQL_PORT.\nError: %s", err.Error())
-	}
-	user := os.Getenv("MYSQL_USER")
-	if user == "" {
-		user = "root"
-	}
-	password := os.Getenv("MYSQL_PASS")
-	dbname := "isuketch"
+	// host := os.Getenv("MYSQL_HOST")
+	// if host == "" {
+	// 	host = "localhost"
+	// }
+	// port := os.Getenv("MYSQL_PORT")
+	// if port == "" {
+	// 	port = "3306"
+	// }
+	// _, err := strconv.Atoi(port)
+	// if err != nil {
+	// 	log.Fatalf("Failed to read DB port number from an environment variable MYSQL_PORT.\nError: %s", err.Error())
+	// }
+	// user := os.Getenv("MYSQL_USER")
+	// if user == "" {
+	// 	user = "root"
+	// }
+	// password := os.Getenv("MYSQL_PASS")
+	// dbname := "isuketch"
 
 	go func() {
 		log.Println(http.ListenAndServe("0.0.0.0:6060", nil))
@@ -616,11 +616,11 @@ func main() {
 
 	dsn := fmt.Sprintf(
 		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=true&loc=Local",
-		user,
-		password,
-		host,
-		port,
-		dbname,
+		"isucon",
+		"isucon",
+		"13.73.7.32",
+		3306,
+		"isuketch",
 	)
 
 	dbx, err = sqlx.Open("mysql", dsn)
