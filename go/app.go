@@ -619,14 +619,14 @@ func main() {
 		"isucon",
 		"isucon",
 		"13.73.7.32",
-		3306,
+		"3306",
 		"isuketch",
 	)
 
-	dbx, err = sqlx.Open("mysql", dsn)
-	if err != nil {
-		log.Fatalf("Failed to connect to DB: %s.", err.Error())
-	}
+	dbx, _ = sqlx.Open("mysql", dsn)
+	//if err != nil {
+	//	log.Fatalf("Failed to connect to DB: %s.", err.Error())
+	//}
 	defer dbx.Close()
 
 	mux := goji.NewMux()
